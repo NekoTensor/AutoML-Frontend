@@ -1,0 +1,159 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  --font-display: "Inter", system-ui, sans-serif;
+  --font-mono: "JetBrains Mono", ui-monospace, monospace;
+}
+
+html {
+  scroll-behavior: smooth;
+  background: #050208;
+}
+
+body {
+  background: #050208;
+  color: #f1e8fb;
+  font-family: var(--font-display);
+  position: relative;
+}
+
+/* ---- Neon glassmorphism ---- */
+.glass {
+  background: rgba(22, 15, 40, 0.55);
+  border: 1px solid rgba(232, 121, 249, 0.18);
+  backdrop-filter: blur(18px);
+  -webkit-backdrop-filter: blur(18px);
+  box-shadow: 0 0 0 1px rgba(167, 139, 250, 0.05), 0 8px 32px rgba(0, 0, 0, 0.4);
+}
+
+.glass-strong {
+  background: rgba(15, 10, 26, 0.78);
+  border: 1px solid rgba(232, 121, 249, 0.25);
+  backdrop-filter: blur(24px);
+  -webkit-backdrop-filter: blur(24px);
+  box-shadow: 0 0 40px rgba(232, 121, 249, 0.08), 0 8px 32px rgba(0, 0, 0, 0.5);
+}
+
+.neon-text {
+  text-shadow: 0 0 18px rgba(232, 121, 249, 0.55), 0 0 40px rgba(34, 211, 238, 0.25);
+}
+
+.neon-border {
+  border: 1px solid rgba(232, 121, 249, 0.35);
+  box-shadow: 0 0 12px rgba(232, 121, 249, 0.25), inset 0 0 12px rgba(34, 211, 238, 0.05);
+}
+
+/* ---- Magnetic button base ---- */
+.magnetic-btn {
+  will-change: transform;
+  transition: transform 0.15s ease-out, box-shadow 0.3s ease;
+}
+.magnetic-btn:hover {
+  box-shadow: 0 0 24px rgba(232, 121, 249, 0.35), 0 0 48px rgba(34, 211, 238, 0.15);
+}
+
+.pin-scroller {
+  min-height: 100vh;
+}
+
+/* ---- Ambient background: animated grid + drifting glow orbs, always on, independent of scroll ---- */
+.cyber-grid {
+  position: fixed;
+  inset: 0;
+  z-index: 0;
+  pointer-events: none;
+  background-image:
+    linear-gradient(rgba(167, 139, 250, 0.08) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(167, 139, 250, 0.08) 1px, transparent 1px);
+  background-size: 48px 48px;
+  animation: grid-drift 18s linear infinite;
+  opacity: 0.5;
+}
+
+@keyframes grid-drift {
+  0% { background-position: 0 0, 0 0; }
+  100% { background-position: 48px 96px, 96px 48px; }
+}
+
+.scanline-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 1;
+  pointer-events: none;
+  background: linear-gradient(
+    to bottom,
+    transparent 0%,
+    rgba(232, 121, 249, 0.04) 50%,
+    transparent 100%
+  );
+  background-size: 100% 6px;
+  animation: scan-sweep 9s linear infinite;
+  mix-blend-mode: overlay;
+}
+
+@keyframes scan-sweep {
+  0% { transform: translateY(-100%); }
+  100% { transform: translateY(100%); }
+}
+
+.glow-orb {
+  position: fixed;
+  border-radius: 9999px;
+  filter: blur(90px);
+  pointer-events: none;
+  z-index: 0;
+  will-change: transform;
+}
+
+/* ---- Glitch title flicker (subtle, ambient, respects reduced motion below) ---- */
+@keyframes glitch-flicker {
+  0%, 92%, 100% { opacity: 1; transform: translate(0, 0); }
+  93% { opacity: 0.85; transform: translate(-1px, 0.5px); }
+  95% { opacity: 0.9; transform: translate(1px, -0.5px); }
+  97% { opacity: 0.8; transform: translate(-0.5px, 0); }
+}
+.glitch-title {
+  animation: glitch-flicker 6s ease-in-out infinite;
+}
+
+/* ---- Reduced motion: kill all heavy/ambient/continuous animation, keep content visible ---- */
+@media (prefers-reduced-motion: reduce) {
+  * {
+    animation-duration: 0.001ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.001ms !important;
+    scroll-behavior: auto !important;
+  }
+
+  .parallax-layer,
+  .scrub-target,
+  .magnetic-btn,
+  .glow-orb {
+    transform: none !important;
+  }
+
+  .cyber-grid,
+  .scanline-overlay {
+    animation: none !important;
+    opacity: 0.15;
+  }
+
+  .glitch-title {
+    animation: none !important;
+  }
+
+  .reduced-motion-static {
+    opacity: 1 !important;
+    transform: none !important;
+  }
+}
+
+::-webkit-scrollbar {
+  width: 8px;
+}
+::-webkit-scrollbar-thumb {
+  background: linear-gradient(180deg, #e879f9, #22d3ee);
+  border-radius: 4px;
+}
