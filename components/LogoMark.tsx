@@ -14,7 +14,7 @@ interface LogoMarkProps {
 export default function LogoMark({ size = 36, className = "", glow = true }: LogoMarkProps) {
   return (
     <Image
-      src="/logo-original-artwork.jpg.png"
+      src="/logo-nekocortex.png"
       alt="NekoCortex"
       width={size}
       height={size}
