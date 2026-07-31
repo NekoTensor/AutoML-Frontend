@@ -3,10 +3,18 @@
 import { useLayoutEffect, useRef } from "react";
 import { gsap, prefersReducedMotion } from "@/lib/gsap";
 
+// -const ORBS = [
+// -  { color: "rgba(232,121,249,0.35)", size: 520, top: "8%", left: "12%" },
+// -  { color: "rgba(34,211,238,0.28)", size: 460, top: "45%", left: "70%" },  -------> (initially...this was the cause of blurry webpage)
+// -  { color: "rgba(167,139,250,0.3)", size: 600, top: "75%", left: "25%" },
+// -];
+
+
+// Two orbs instead of three, smaller, less blur radius
+// for scroll/animation sluggishness (see globals.css commit for why).
 const ORBS = [
-  { color: "rgba(232,121,249,0.35)", size: 520, top: "8%", left: "12%" },
-  { color: "rgba(34,211,238,0.28)", size: 460, top: "45%", left: "70%" },
-  { color: "rgba(167,139,250,0.3)", size: 600, top: "75%", left: "25%" },
+  { color: "rgba(232,121,249,0.28)", size: 380, top: "10%", left: "15%" },
+  { color: "rgba(34,211,238,0.22)", size: 340, top: "55%", left: "68%" },
 ];
 
 export default function AmbientBackground() {
