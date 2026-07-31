@@ -119,6 +119,15 @@ body {
   animation: glitch-flicker 6s ease-in-out infinite;
 }
 
+/* ---- Logo ambient glow pulse — continuous breathing effect, independent of scroll/hover ---- */
+@keyframes logo-glow-pulse {
+  0%, 100% { filter: drop-shadow(0 0 10px rgba(232, 121, 249, 0.55)); }
+  50% { filter: drop-shadow(0 0 22px rgba(34, 211, 238, 0.75)); }
+}
+.logo-pulse {
+  animation: logo-glow-pulse 3s ease-in-out infinite;
+}
+
 /* ---- Reduced motion: kill all heavy/ambient/continuous animation, keep content visible ---- */
 @media (prefers-reduced-motion: reduce) {
   * {
