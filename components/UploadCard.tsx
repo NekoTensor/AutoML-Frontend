@@ -3,6 +3,7 @@
 import { useLayoutEffect, useRef, useState } from "react";
 import { gsap, ScrollTrigger, ensureGsapRegistered, prefersReducedMotion } from "@/lib/gsap";
 import MagneticButton from "./MagneticButton";
+import ThemedSelect from "./ThemedSelect";
 import { TaskType, UploadResponse } from "@/lib/types";
 
 interface Props {
@@ -80,22 +81,15 @@ export default function UploadCard({ onUpload, onStart, uploading, disabled }: P
         </div>
 
         <label className="block text-xs uppercase tracking-wider text-white/50 mb-2">Target column</label>
-        <select
-          value={targetCol}
-          onChange={(e) => setTargetCol(e.target.value)}
-          disabled={!upload}
-          className="w-full rounded-xl border border-white/10 bg-white/5 px-4 py-3 text-sm mb-8 disabled:opacity-40"
-        >
-          {upload ? (
-            upload.columns.map((c) => (
-              <option key={c} value={c}>
-                {c}
-              </option>
-            ))
-          ) : (
-            <option>Upload a CSV first</option>
-          )}
-        </select>
+        <div className="mb-8">
+          <ThemedSelect
+            value={targetCol}
+            onChange={setTargetCol}
+            options={upload?.columns ?? []}
+            placeholder="Upload a CSV first"
+            disabled={!upload}
+          />
+        </div>
 
         <MagneticButton
           disabled={!upload || disabled}
