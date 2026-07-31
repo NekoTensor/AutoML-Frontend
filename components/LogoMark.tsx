@@ -11,7 +11,7 @@ interface LogoMarkProps {
   glow?: boolean;
 }
 
-export default function LogoMark({ size = 36, className = "", glow = true }: LogoMarkProps) {
+export default function LogoMark({ size = 40, className = "", glow = true }: LogoMarkProps) {
   return (
     <Image
       src="/logo-nekocortex.png"
