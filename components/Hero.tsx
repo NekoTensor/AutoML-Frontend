@@ -3,7 +3,6 @@
 import { useLayoutEffect, useRef } from "react";
 import { gsap, ensureGsapRegistered, prefersReducedMotion } from "@/lib/gsap";
 import LogoMark from "./LogoMark";
-import ParticleField from "./ParticleField";
 
 // A small 3-layer network used as ambient backdrop behind the logo/title.
 // It plays its draw-in automatically on load (not tied to scroll position
@@ -135,7 +134,6 @@ export default function Hero() {
   return (
     <section ref={sectionRef} className="pin-scroller relative flex items-center justify-center overflow-hidden">
       <div className="parallax-layer absolute inset-0 flex items-center justify-center opacity-50">
-        <ParticleField />
         <svg ref={svgRef} viewBox="0 0 720 480" className="w-[90vw] max-w-3xl scrub-target relative">
           <defs>
             <linearGradient id="edgeGradient" x1="0" y1="0" x2="1" y2="0">
