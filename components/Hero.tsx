@@ -4,15 +4,6 @@ import { useLayoutEffect, useRef } from "react";
 import { gsap, ScrollTrigger, ensureGsapRegistered, prefersReducedMotion } from "@/lib/gsap";
 import LogoMark from "./LogoMark";
 
-// A small 3-layer network used as ambient backdrop behind the logo/title.
-// It now plays its draw-in automatically on load (not tied to scroll
-// position at all), then settles into the same continuous idle pulse as
-// before. Scroll only does one thing here: a brief "friction" pin at the
-// very top of the page, so the first bit of scrolling takes a bit more
-// effort before the page actually moves past the hero — independent of
-// the network animation, which is already done playing by the time
-// anyone scrolls.
-
 const LAYERS = [
   { x: 120, ys: [80, 180, 280, 380] },
   { x: 360, ys: [40, 140, 240, 340, 440] },
@@ -63,7 +54,6 @@ export default function Hero() {
       gsap.set(logoRef.current, { opacity: 0, y: -20, scale: 0.85 });
       gsap.set([titleRef.current, subRef.current], { opacity: 0, y: 20 });
 
-      // --- Autoplay intro: plays once on load, no scroll involved ---
       const intro = gsap.timeline();
       intro
         .to(nodeEls ?? [], { opacity: 1, scale: 1, stagger: 0.03, duration: 0.5 }, 0)
@@ -72,8 +62,6 @@ export default function Hero() {
         .to(titleRef.current, { opacity: 1, y: 0, duration: 0.6 }, 0.75)
         .to(subRef.current, { opacity: 1, y: 0, duration: 0.6 }, 0.9);
 
-      // Continuous ambient idle pulse on the network — independent of
-      // both scroll and the intro timeline above.
       if (nodeEls && nodeEls.length) {
         gsap.to(nodeEls, {
           opacity: 0.55,
@@ -86,10 +74,6 @@ export default function Hero() {
         });
       }
 
-      // --- Scroll friction: a short pin, no scrub, no scroll-tied content ---
-      // Just holds the hero in place for a small scroll distance so the
-      // first scroll gesture feels like it takes a bit of extra effort
-      // before the page actually advances.
       ScrollTrigger.create({
         trigger: sectionRef.current,
         start: "top top",
@@ -149,13 +133,16 @@ export default function Hero() {
 
       <div className="relative z-10 text-center px-6">
         <div ref={logoRef} className="reduced-motion-static flex justify-center mb-6">
-          <LogoMark size={120} glow={false} className="logo-pulse" />
+          <LogoMark size={200} glow={false} className="logo-pulse" />
         </div>
 
         <div ref={titleRef} className="reduced-motion-static">
           <h1 className="glitch-title neon-text font-display text-5xl md:text-7xl font-bold tracking-tight bg-clip-text text-transparent bg-gradient-to-br from-white via-accent3 to-accent">
-            NekoCortex: AutoML Framework
+            NekoCortex
           </h1>
+          <p className="neon-text font-display text-xl md:text-3xl font-normal tracking-tight bg-clip-text text-transparent bg-gradient-to-br from-white via-accent3 to-accent mt-2">
+            An autonomous deep learning framework
+          </p>
         </div>
         <div ref={subRef} className="reduced-motion-static mt-6">
           <p className="text-lg md:text-xl text-white/60 max-w-xl mx-auto">
