@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import AmbientBackground from "@/components/AmbientBackground";
+import ParticleField from "@/components/ParticleField";
 import SmoothScroll from "@/components/SmoothScroll";
 import "./globals.css";
 
@@ -14,6 +15,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
       <body className="antialiased bg-ink text-white">
         <SmoothScroll />
         <AmbientBackground />
+        <ParticleField />
         <div className="relative z-10">{children}</div>
       </body>
     </html>
