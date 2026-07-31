@@ -101,10 +101,11 @@ body {
 .glow-orb {
   position: fixed;
   border-radius: 9999px;
-  filter: blur(90px);
+  filter: blur(55px);
   pointer-events: none;
   z-index: 0;
   will-change: transform;
+  contain: layout paint;
 }
 
 /* ---- Glitch title flicker (subtle, ambient, respects reduced motion below) ---- */
