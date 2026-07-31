@@ -1,8 +1,13 @@
 "use client";
 
 import { useLayoutEffect, useRef } from "react";
-import { gsap, ScrollTrigger, ensureGsapRegistered, prefersReducedMotion } from "@/lib/gsap";
+import { gsap, ensureGsapRegistered, prefersReducedMotion } from "@/lib/gsap";
 import LogoMark from "./LogoMark";
+
+// A small 3-layer network used as ambient backdrop behind the logo/title.
+// It plays its draw-in automatically on load (not tied to scroll position
+// at all), then settles into a continuous idle pulse. Scroll has no
+// effect on this section at all — no pin, no scrub.
 
 const LAYERS = [
   { x: 120, ys: [80, 180, 280, 380] },
@@ -73,13 +78,6 @@ export default function Hero() {
           delay: 1.2,
         });
       }
-
-      ScrollTrigger.create({
-        trigger: sectionRef.current,
-        start: "top top",
-        end: "+=35%",
-        pin: true,
-      });
     }, sectionRef);
 
     return () => ctx.revert();
