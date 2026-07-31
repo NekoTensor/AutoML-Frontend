@@ -10,9 +10,13 @@ interface Particle {
   vy: number;
 }
 
-const PARTICLE_COUNT = 55;
+const PARTICLE_COUNT = 70;
 const CONNECT_DISTANCE = 110;
 const COLOR = "34, 211, 238"; // accent2, as an rgb triplet for use in rgba()
+
+// Fixed to the viewport (like the grid/orbs in AmbientBackground) so it
+// stays visible and keeps animating no matter where you've scrolled to —
+// not scoped to any one section.
 
 export default function ParticleField() {
   const canvasRef = useRef<HTMLCanvasElement>(null);
@@ -29,10 +33,9 @@ export default function ParticleField() {
     let dpr = 1;
 
     function resize() {
-      const rect = canvas!.parentElement!.getBoundingClientRect();
       dpr = window.devicePixelRatio || 1;
-      width = rect.width;
-      height = rect.height;
+      width = window.innerWidth;
+      height = window.innerHeight;
       canvas!.width = width * dpr;
       canvas!.height = height * dpr;
       canvas!.style.width = `${width}px`;
@@ -104,5 +107,5 @@ export default function ParticleField() {
     };
   }, []);
 
-  return <canvas ref={canvasRef} className="absolute inset-0 w-full h-full" />;
+  return <canvas ref={canvasRef} className="fixed inset-0 z-[1] pointer-events-none" />;
 }
