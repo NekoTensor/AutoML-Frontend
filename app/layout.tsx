@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import AmbientBackground from "@/components/AmbientBackground";
 import SmoothScroll from "@/components/SmoothScroll";
+import BrandHeader from "@/components/BrandHeader";
 import "./globals.css";
 
 export const metadata: Metadata = {
@@ -14,6 +15,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
       <body className="antialiased bg-ink text-white">
         <SmoothScroll />
         <AmbientBackground />
+        <BrandHeader />
         <div className="relative z-10">{children}</div>
       </body>
     </html>
