@@ -24,6 +24,10 @@ how it's presented.
 - **Live phase feed** — same 5 phases, same event contract, now rendered
   as glass cards with GSAP-animated entrances instead of plain CSS.
 - **Dashboard** — same 3 downloads, now with magnetic-hover buttons.
+- **Smooth inertia scrolling** — Lenis (`components/SmoothScroll.tsx`)
+  intercepts scroll and smooths it with momentum, then drives each frame
+  from GSAP's ticker so ScrollTrigger animations stay in sync with the
+  smoothed position instead of the raw one.
 - **Reduced motion** — every GSAP timeline checks
   `prefers-reduced-motion` before running (see `lib/gsap.ts`'s
   `prefersReducedMotion()`) and falls back to a static, fully-visible
@@ -34,7 +38,7 @@ how it's presented.
 ## Project layout
 
 ```
-automl-ui/
+automl-frontend/
 ├── app/
 │   ├── layout.tsx       # root layout, fonts, metadata
 │   ├── page.tsx         # assembles Hero → ScrollySteps → UploadCard → PhaseFeed → Dashboard
@@ -48,7 +52,11 @@ automl-ui/
 │   ├── LiveLog.tsx      # auto-scrolling log list with per-line fade-in
 │   ├── ProgressBar.tsx
 │   ├── Dashboard.tsx    # final downloads
-│   └── MagneticButton.tsx
+│   ├── MagneticButton.tsx
+│   ├── SmoothScroll.tsx # Lenis inertia scrolling, fed into GSAP's ticker
+│   ├── AmbientBackground.tsx
+│   ├── BrandHeader.tsx  # NekoCortex header
+│   └── LogoMark.tsx     # NekoCortex logo SVG
 ├── lib/
 │   ├── config.ts        # API_URL / WS_URL — the one place to point at your backend
 │   ├── types.ts         # TS types mirroring the backend's websocket event contract
@@ -77,7 +85,7 @@ something doesn't compile, paste me the exact error and I'll fix it —
 don't assume it's your setup that's wrong.
 
 ```bash
-cd automl-ui
+cd automl-frontend
 npm install
 cp .env.local.example .env.local
 ```
@@ -107,12 +115,3 @@ changes; without it, the browser will block every request from
   since it's the more battle-tested pairing as of when this was written
   — upgrade path to v4 exists if you want it later, but wasn't tested
   here.
-- **No inertia/smooth-scroll library (e.g. Lenis) wired in.** The brief
-  mentioned "smooth inertia scrolling" — `html { scroll-behavior: smooth }`
-  in `globals.css` gives basic native smoothing, but a real inertia feel
-  (momentum that outlasts the scroll gesture) needs a library like Lenis
-  layered on top of GSAP's ScrollTrigger, which I left out to avoid
-  shipping an unverified three-way integration (Lenis + ScrollTrigger +
-  Next.js App Router has some known setup gotchas around `scrollerProxy`)
-  without being able to test it. Say the word and I'll add it as a
-  follow-up with the integration written out explicitly.
