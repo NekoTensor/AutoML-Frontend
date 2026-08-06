@@ -1,0 +1,18 @@
+# dependencies
+/node_modules
+
+# next.js build output
+/.next
+/out
+next-env.d.ts
+tsconfig.tsbuildinfo
+
+# local env — .env.local.example is the tracked template
+.env*.local
+
+# vercel
+.vercel
+
+# misc
+.DS_Store
+*.log

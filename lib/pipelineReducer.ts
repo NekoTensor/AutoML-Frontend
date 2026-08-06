@@ -1,7 +1,23 @@
-import { PipelineEvent, PipelineState, CompressStep } from "./types";
+import { PipelineEvent, PipelineState, CompressStep, initialPipelineState } from "./types";
 
 export function pipelineReducer(state: PipelineState, event: PipelineEvent): PipelineState {
   const { phase, status } = event;
+
+  // Client-side control events. These share the `pipeline` phase with the
+  // server's own lifecycle events so that attaching to a running job — which
+  // replays the server's whole event log through this same reducer — rebuilds
+  // state identically to having watched the run live.
+  if (phase === "pipeline") {
+    if (status === "reset") return { ...initialPipelineState };
+    if (status === "started") return { ...state, status: "running", jobId: event.job_id as string };
+    if (status === "cancelled") return { ...state, status: "cancelled" };
+    if (status === "disconnected") {
+      // Only meaningful mid-run; a socket closing after the run finished is
+      // just the server hanging up normally and must not clobber the result.
+      if (state.status !== "running") return state;
+      return { ...state, status: "error", errorMessage: event.message as string };
+    }
+  }
 
   if (phase === "phase1") {
     const p1 = { ...state.phase1, active: true };
