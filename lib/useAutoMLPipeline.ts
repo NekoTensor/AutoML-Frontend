@@ -104,7 +104,16 @@ export function useAutoMLPipeline() {
       const form = new FormData();
       form.append("file", file);
       const res = await fetch(`${API_URL}/api/upload`, { method: "POST", body: form });
-      if (!res.ok) throw new Error(`Upload failed (${res.status})`);
+      if (!res.ok) {
+        // The backend explains rejections in `detail` ("That file is empty",
+        // parse errors, and so on). Surfacing that is the difference between
+        // a fixable message and a bare status code.
+        const detail = await res
+          .json()
+          .then((body) => body?.detail as string | undefined)
+          .catch(() => undefined);
+        throw new Error(detail || `Upload failed (${res.status})`);
+      }
       const data: UploadResponse = await res.json();
       setUpload(data);
       return data;
