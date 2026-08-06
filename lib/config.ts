@@ -13,3 +13,15 @@ export const API_URL = rawApiUrl.replace(/\/+$/, "");
 
 // Derive the websocket URL from the same origin (http -> ws, https -> wss)
 export const WS_URL = API_URL.replace(/^http/, "ws");
+
+// The backend hands back download links as root-relative paths
+// ("/api/download/onnx/abc123"), but nothing stops a future version from
+// returning an absolute URL instead — e.g. if artifacts move to S3 or a
+// CDN. Naively doing `${API_URL}${path}` would mangle that into
+// "https://backend/https://cdn/..." , so resolve properly: absolute URLs
+// pass through untouched, relative ones get the API origin prefixed.
+export function resolveApiUrl(path: string): string {
+  if (!path) return "";
+  if (/^https?:\/\//i.test(path)) return path;
+  return `${API_URL}${path.startsWith("/") ? "" : "/"}${path}`;
+}

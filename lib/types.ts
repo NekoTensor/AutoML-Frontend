@@ -62,7 +62,10 @@ export interface PipelineEvent {
 }
 
 export interface PipelineState {
-  status: "idle" | "running" | "complete" | "error";
+  status: "idle" | "running" | "complete" | "error" | "cancelled";
+  // Set as soon as a run starts so the UI can cancel it and so a reload
+  // knows which job to re-attach to. Survives in sessionStorage.
+  jobId?: string;
   phase1: {
     active: boolean;
     done: boolean;

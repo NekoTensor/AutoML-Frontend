@@ -27,7 +27,9 @@ NekoCortex is the frontend for a real, working AutoML pipeline — not a themed 
 
 At the end you get a trained ONNX model, a full JSON report, and a self-contained Jupyter notebook documenting the exact run — all downloadable.
 
-This repo is the presentation layer. The actual pipeline (FastAPI + PyTorch) lives in [AutoML-Backend](https://github.com/NekoTensor/AutoML-Backend) and is deployed separately on Hugging Face Spaces.
+A run belongs to the backend, not to the tab that started it. You can **cancel** one mid-flight, and if you reload the page while a run is going, the app **re-attaches** to it: the job id is kept in `sessionStorage`, and the backend replays that job's entire event log through the same reducer that handles live events. Restored state is rebuilt rather than serialized, so it can't drift from what you'd have seen had you never left.
+
+This repo is the presentation layer, and the only frontend — the actual pipeline (FastAPI + PyTorch) lives in [AutoML-Backend](https://github.com/NekoTensor/AutoML-Backend), deployed separately on Hugging Face Spaces. That service used to serve its own standalone HTML UI as well; it's API-only now and redirects `/` here, so there's one interface to maintain instead of two that drift.
 
 ## Design
 
@@ -63,12 +65,13 @@ automl-ui/
 │   ├── PhaseCard.tsx        # shared glass card shell
 │   ├── LiveLog.tsx          # auto-scrolling log with per-line animation
 │   ├── Dashboard.tsx        # final downloads (ONNX / report / notebook)
+│   ├── RunControls.tsx      # cancel an in-flight run / start over / reconnect notice
 │   └── MagneticButton.tsx   # cursor-following hover effect
 └── lib/
-    ├── config.ts             # backend API/WebSocket URL (env-driven)
+    ├── config.ts             # backend API/WebSocket URL (env-driven) + resolveApiUrl()
     ├── types.ts              # TS types mirroring the backend's WS event contract
     ├── pipelineReducer.ts    # maps each WS event onto UI state
-    ├── useAutoMLPipeline.ts  # upload + WebSocket hook
+    ├── useAutoMLPipeline.ts  # upload + WebSocket hook, cancel/resume lifecycle
     └── gsap.ts               # ScrollTrigger registration, reduced-motion check
 ```
 

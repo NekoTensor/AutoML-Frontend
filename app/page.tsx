@@ -5,16 +5,23 @@ import ScrollySteps from "@/components/ScrollySteps";
 import UploadCard from "@/components/UploadCard";
 import PhaseFeed from "@/components/PhaseFeed";
 import Dashboard from "@/components/Dashboard";
+import RunControls from "@/components/RunControls";
 import { useAutoMLPipeline } from "@/lib/useAutoMLPipeline";
 
 export default function Page() {
-  const { state, uploading, uploadFile, start } = useAutoMLPipeline();
+  const { state, uploading, resuming, uploadFile, start, cancel, reset } = useAutoMLPipeline();
 
   return (
     <main>
       <Hero />
       <ScrollySteps />
-      <UploadCard onUpload={uploadFile} onStart={start} uploading={uploading} disabled={state.status === "running"} />
+      <UploadCard
+        onUpload={uploadFile}
+        onStart={start}
+        uploading={uploading}
+        disabled={state.status === "running"}
+      />
+      <RunControls status={state.status} resuming={resuming} onCancel={cancel} onReset={reset} />
       <PhaseFeed state={state} />
       {state.status === "error" && (
         <section className="px-6 pb-24">
