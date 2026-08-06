@@ -82,7 +82,18 @@ export default function ThemedSelect({ value, onChange, options, placeholder = "
 
       {open && !disabled && (
         <div
-          className={`absolute z-30 w-full overflow-y-auto rounded-xl glass-strong neon-border p-1.5 select-none ${
+          // Lenis hijacks wheel events page-wide to drive its smooth scroll,
+          // so a wheel over this list moved the page and left the list itself
+          // stuck — the only way down a long column list was dragging the
+          // scrollbar. Lenis walks the event's composed path and ignores any
+          // gesture originating inside an element marked with this attribute,
+          // which hands the wheel back to the browser's native scrolling.
+          //
+          // `overscroll-contain` finishes the job: once the list hits its top
+          // or bottom, the browser would otherwise chain the remaining scroll
+          // to the page behind it. Together, the wheel affects only this list.
+          data-lenis-prevent
+          className={`absolute z-30 w-full overflow-y-auto overscroll-contain rounded-xl glass-strong neon-border p-1.5 select-none ${
             openUpward ? "bottom-full mb-2" : "top-full mt-2"
           }`}
           style={{ maxHeight: MAX_LIST_HEIGHT }}
