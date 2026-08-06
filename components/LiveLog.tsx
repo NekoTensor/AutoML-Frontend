@@ -31,7 +31,11 @@ export default function LiveLog({ lines, className = "", maxHeight = "220px" }: 
   return (
     <div
       ref={containerRef}
-      className={`overflow-y-auto font-mono text-sm text-white/70 space-y-1 pr-2 ${className}`}
+      // Same reason as the dropdown list: without this, Lenis consumes the
+      // wheel and scrolling back through the epoch/trial log is impossible
+      // without grabbing the scrollbar.
+      data-lenis-prevent
+      className={`overflow-y-auto overscroll-contain font-mono text-sm text-white/70 space-y-1 pr-2 ${className}`}
       style={{ maxHeight }}
     >
       {lines.map((line, i) => (
