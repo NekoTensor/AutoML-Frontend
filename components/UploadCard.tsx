@@ -19,6 +19,7 @@ export default function UploadCard({ onUpload, onStart, uploading, disabled }: P
   const [taskType, setTaskType] = useState<TaskType>("classification");
   const [targetCol, setTargetCol] = useState("");
   const [fileName, setFileName] = useState("");
+  const [error, setError] = useState<string | null>(null);
 
   useLayoutEffect(() => {
     ensureGsapRegistered();
@@ -41,11 +42,34 @@ export default function UploadCard({ onUpload, onStart, uploading, disabled }: P
 
   const handleFile = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
+    // Clear the input straight away so picking the same file twice still
+    // fires onChange — otherwise a retry after a failure silently does
+    // nothing, because the input's value hasn't changed.
+    e.target.value = "";
     if (!file) return;
+
     setFileName(file.name);
-    const data = await onUpload(file);
-    setUpload(data);
-    setTargetCol(data.columns[data.columns.length - 1]);
+    setError(null);
+    // Drop any previous dataset first: leaving the old columns on screen
+    // while a new upload fails would let you start a run against the wrong
+    // file's target column.
+    setUpload(null);
+    setTargetCol("");
+
+    try {
+      const data = await onUpload(file);
+      if (!data.columns?.length) {
+        setError("That CSV has no columns to train on.");
+        return;
+      }
+      setUpload(data);
+      setTargetCol(data.columns[data.columns.length - 1]);
+    } catch (err) {
+      // This used to be an unhandled rejection: the upload failed, nothing
+      // was rendered, and the target-column dropdown just never appeared
+      // with no indication why.
+      setError(err instanceof Error ? err.message : "Upload failed.");
+    }
   };
 
   return (
@@ -58,11 +82,21 @@ export default function UploadCard({ onUpload, onStart, uploading, disabled }: P
         <p className="text-white/50 text-sm mb-8">Upload a CSV — everything downstream is automatic.</p>
 
         <label className="block text-xs uppercase tracking-wider text-white/50 mb-2">Dataset (CSV)</label>
-        <label className="flex items-center justify-between rounded-xl border border-white/10 bg-white/5 px-4 py-3 cursor-pointer mb-6 hover:border-accent2/50 transition-colors">
+        <label
+          className={`flex items-center justify-between rounded-xl border bg-white/5 px-4 py-3 cursor-pointer hover:border-accent2/50 transition-colors ${
+            error ? "border-red-500/50 mb-2" : "border-white/10 mb-6"
+          }`}
+        >
           <span className="text-sm text-white/70">{fileName || "Choose a CSV file..."}</span>
           <span className="text-xs text-accent2 font-mono">{uploading ? "uploading…" : "browse"}</span>
           <input type="file" accept=".csv" className="hidden" onChange={handleFile} />
         </label>
+
+        {error && (
+          <p role="alert" className="text-sm text-red-300 mb-6">
+            {error}
+          </p>
+        )}
 
         <label className="block text-xs uppercase tracking-wider text-white/50 mb-2">Task type</label>
         <div className="flex gap-6 mb-6">
